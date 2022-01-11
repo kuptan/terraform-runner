@@ -43,6 +43,7 @@ var _ = BeforeSuite(func() {
 	os.Setenv("TERRAFORM_VERSION", "1.0.2")
 	os.Setenv("TERRAFORM_WORKSPACE", "default")
 	os.Setenv("OUTPUT_SECRET_NAME", secretName)
+	os.Setenv("POD_NAMESPACE", "default")
 
 	lib.LoadEnv()
 })
