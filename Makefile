@@ -1,8 +1,7 @@
 IMG ?= terraform-runner:latest
 
-docker-build: unit_test
+docker-build: test
 	docker build -t ${IMG} .
-
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
@@ -18,8 +17,6 @@ build: fmt vet
 run: build
 	go run ./main.go
 
-unit_test:
+.PHONY: test
+test:
 	go test ./... -coverprofile cover.out
-
-ginkgo:
-	${HOME}/go/bin/ginkgo test ./... -coverprofile cover.out
