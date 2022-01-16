@@ -31,7 +31,13 @@ FROM alpine:3.15
 COPY --from=builder /dist/ /runner
 
 RUN apk add --no-cache git
+RUN apk --update add openssh-client
 
-USER 65532:65532
+# RUN mkdir /root/.ssh
+
+# RUN chown 65532 /etc/ssh/ssh_config 
+# RUN chown -R 65532 /root/.ssh && chmod -R go-rwx /root/.ssh
+
+# USER 65532:65532
 
 ENTRYPOINT ["/runner/main"]

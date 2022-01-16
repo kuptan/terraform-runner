@@ -124,7 +124,7 @@ func (r *TerraformRunner) Destroy(opts ...tfexec.DestroyOption) error {
 }
 
 func (r *TerraformRunner) GetOutputs() (map[string][]byte, error) {
-	log.Info("retrieving outputs from module")
+	log.Info("retrieving outputs for module")
 
 	outputs, err := r.CMD.Output(context.Background())
 
@@ -142,7 +142,7 @@ func (r *TerraformRunner) GetOutputs() (map[string][]byte, error) {
 }
 
 func (r *TerraformRunner) GetPlanOptions() []tfexec.PlanOption {
-	files, _ := listFilesInDir(Env.VarFilesPath)
+	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
 
 	opts := []tfexec.PlanOption{}
 
@@ -156,7 +156,7 @@ func (r *TerraformRunner) GetPlanOptions() []tfexec.PlanOption {
 }
 
 func (r *TerraformRunner) GetApplyOptions() []tfexec.ApplyOption {
-	files, _ := listFilesInDir(Env.VarFilesPath)
+	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
 
 	opts := []tfexec.ApplyOption{}
 
@@ -168,7 +168,7 @@ func (r *TerraformRunner) GetApplyOptions() []tfexec.ApplyOption {
 }
 
 func (r *TerraformRunner) GetDestroyOptions() []tfexec.DestroyOption {
-	files, _ := listFilesInDir(Env.VarFilesPath)
+	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
 
 	opts := []tfexec.DestroyOption{}
 

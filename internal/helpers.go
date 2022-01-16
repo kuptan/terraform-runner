@@ -25,14 +25,8 @@ func varFileExtensionAllowed(file fs.FileInfo) bool {
 	return ext == ".tfvars" || ext == ".tf"
 }
 
-// lists all files in a directory
-func listFilesInDir(path string) ([]string, error) {
-	files, err := ioutil.ReadDir(path)
-
-	if err != nil {
-		return nil, err
-	}
-
+// filters files on tfvar files
+func filterTfVarsFiles(path string, files []fs.FileInfo) []string {
 	fileNames := []string{}
 
 	for _, file := range files {
@@ -41,7 +35,29 @@ func listFilesInDir(path string) ([]string, error) {
 		}
 	}
 
-	return fileNames, nil
+	return fileNames
+}
+
+// lists all files in a directory
+func listFilesInDir(path string) ([]fs.FileInfo, error) {
+	files, err := ioutil.ReadDir(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return files, nil
+}
+
+// return a list of tfvar files
+func getTfVarFilesPaths(path string) ([]string, error) {
+	files, err := listFilesInDir(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return filterTfVarsFiles(path, files), nil
 }
 
 // checks whether if file exist

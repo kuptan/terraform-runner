@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+	log.SetLevel(log.InfoLevel)
+
 	if err := lib.LoadEnv(); err != nil {
 		log.Error("unable to load environment variables")
 		log.Panic(err)
@@ -21,6 +23,8 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+
+	internal.AddSSHKeyIfExist()
 
 	if err := tf.Init(); err != nil {
 		log.Panic(err)
@@ -57,8 +61,6 @@ func main() {
 	}
 
 	if len(outputs) > 0 {
-		log.Info("creating a kubernetes secret to store the outputs")
-
 		err := internal.UpdateSecretWithOutputs(outputs)
 
 		if err != nil {

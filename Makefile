@@ -23,3 +23,7 @@ run: build
 .PHONY: test
 test:
 	go test ./... -coverprofile cover.out
+
+.PHONY: test-only
+test-only:
+	go test ./... -coverprofile cover.out
