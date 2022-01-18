@@ -19,19 +19,20 @@ func arrayContains(s []string, str string) bool {
 	return false
 }
 
-func varFileExtensionAllowed(file fs.FileInfo) bool {
-	ext := filepath.Ext(file.Name())
+func varFileExtensionAllowed(file string) bool {
+	ext := filepath.Ext(file)
 
 	return ext == ".tfvars" || ext == ".tf"
 }
 
 // filters files on tfvar files
-func filterTfVarsFiles(path string, files []fs.FileInfo) []string {
+func filterTfVarsFiles(files []string) []string {
 	fileNames := []string{}
 
 	for _, file := range files {
-		if !file.IsDir() && varFileExtensionAllowed(file) {
-			fileNames = append(fileNames, fmt.Sprintf("%s/%s", path, file.Name()))
+
+		if varFileExtensionAllowed(file) {
+			fileNames = append(fileNames, file)
 		}
 	}
 
@@ -49,15 +50,43 @@ func listFilesInDir(path string) ([]fs.FileInfo, error) {
 	return files, nil
 }
 
-// return a list of tfvar files
-func getTfVarFilesPaths(path string) ([]string, error) {
-	files, err := listFilesInDir(path)
+// lists all files in a directory and its sub directories
+func listFilesInDirNested(basePath string) ([]string, error) {
+	files := []string{}
+	all, err := listFilesInDir(basePath)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return filterTfVarsFiles(path, files), nil
+	for _, f := range all {
+		namePath := fmt.Sprintf("%s/%s", basePath, f.Name())
+
+		if f.IsDir() {
+			listed, err := listFilesInDirNested(namePath)
+
+			if err != nil {
+				return nil, err
+			}
+
+			files = append(files, listed...)
+		} else {
+			files = append(files, fmt.Sprintf("%s/%s", basePath, f.Name()))
+		}
+	}
+
+	return files, nil
+}
+
+// return a list of tfvar files
+func getTfVarFilesPaths(path string) ([]string, error) {
+	files, err := listFilesInDirNested(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return filterTfVarsFiles(files), nil
 }
 
 // checks whether if file exist

@@ -16,6 +16,8 @@ type TerraformRunner struct {
 	CMD        *tfexec.Terraform
 }
 
+var varFiles []string
+
 func Setup() (*TerraformRunner, error) {
 	log.WithField("version", Env.TerraformVersion).Info("installing terraform version")
 
@@ -39,6 +41,14 @@ func Setup() (*TerraformRunner, error) {
 		log.WithField("working_dir", Env.WorkingDir).Error("error running NewTerraform")
 		return nil, err
 	}
+
+	files, err := getTfVarFilesPaths(Env.VarFilesPath)
+
+	if err != nil {
+		log.WithField("error", err).Error("failed to list files in the var files path")
+	}
+
+	varFiles = files
 
 	return &TerraformRunner{
 		WorkingDir: Env.WorkingDir,
@@ -142,11 +152,9 @@ func (r *TerraformRunner) GetOutputs() (map[string][]byte, error) {
 }
 
 func (r *TerraformRunner) GetPlanOptions() []tfexec.PlanOption {
-	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
-
 	opts := []tfexec.PlanOption{}
 
-	for _, path := range files {
+	for _, path := range varFiles {
 		opts = append(opts, tfexec.VarFile(path))
 	}
 
@@ -156,11 +164,9 @@ func (r *TerraformRunner) GetPlanOptions() []tfexec.PlanOption {
 }
 
 func (r *TerraformRunner) GetApplyOptions() []tfexec.ApplyOption {
-	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
-
 	opts := []tfexec.ApplyOption{}
 
-	for _, path := range files {
+	for _, path := range varFiles {
 		opts = append(opts, tfexec.VarFile(path))
 	}
 
@@ -168,11 +174,9 @@ func (r *TerraformRunner) GetApplyOptions() []tfexec.ApplyOption {
 }
 
 func (r *TerraformRunner) GetDestroyOptions() []tfexec.DestroyOption {
-	files, _ := getTfVarFilesPaths(Env.VarFilesPath)
-
 	opts := []tfexec.DestroyOption{}
 
-	for _, path := range files {
+	for _, path := range varFiles {
 		opts = append(opts, tfexec.VarFile(path))
 	}
 
