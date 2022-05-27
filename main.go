@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/kube-champ/terraform-runner/internal"
 	lib "github.com/kube-champ/terraform-runner/internal"
 	log "github.com/sirupsen/logrus"
@@ -11,23 +13,27 @@ func main() {
 
 	if err := lib.LoadEnv(); err != nil {
 		log.Error("unable to load environment variables")
-		log.Panic(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	if _, err := lib.CreateK8SConfig(); err != nil {
-		log.Panic(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	tf, err := lib.Setup()
 
 	if err != nil {
-		log.Panic(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	internal.AddSSHKeyIfExist()
 
 	if err := tf.Init(); err != nil {
-		log.Panic(err)
+		log.Error(err)
+		os.Exit(1)
 	}
 
 	if lib.Env.Workspace != "" {

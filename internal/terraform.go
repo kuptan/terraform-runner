@@ -22,8 +22,9 @@ func Setup() (*TerraformRunner, error) {
 	log.WithField("version", Env.TerraformVersion).Info("installing terraform version")
 
 	installer := &releases.ExactVersion{
-		Product:    product.Terraform,
-		Version:    version.Must(version.NewVersion(Env.TerraformVersion)),
+		Product: product.Terraform,
+		Version: version.Must(version.NewVersion(Env.TerraformVersion)),
+
 		InstallDir: "/tmp",
 	}
 
