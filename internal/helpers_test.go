@@ -34,6 +34,7 @@ var _ = Describe("Helpers function", func() {
 		It("should be a valid tfvar extension", func() {
 			Expect(varFileExtensionAllowed("common.tfvars")).To(BeTrue())
 			Expect(varFileExtensionAllowed("common.tf")).To(BeTrue())
+			Expect(varFileExtensionAllowed("common.json")).To(BeTrue())
 			Expect(varFileExtensionAllowed("common.terraform")).To(BeFalse())
 		})
 	})
