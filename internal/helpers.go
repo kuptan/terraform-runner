@@ -22,7 +22,7 @@ func arrayContains(s []string, str string) bool {
 func varFileExtensionAllowed(file string) bool {
 	ext := filepath.Ext(file)
 
-	return ext == ".tfvars" || ext == ".tf"
+	return ext == ".tfvars" || ext == ".tf" || ext == ".json"
 }
 
 // filters files on tfvar files
